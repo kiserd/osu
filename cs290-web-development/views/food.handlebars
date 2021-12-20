@@ -1,0 +1,119 @@
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Add To Shopping List</h3>
+            <form>
+                <div class="form-group">
+                    <label for="nameSelect">Product Name</label>
+                    <select class="form-control" id="nameSelect">
+                        <option value="Fromm Gold">Fromm Gold</option>
+                        <option value="Zignature Turkey">Zignature Turkey</option>
+                        <option value="Bladder Control">Bladder Control</option>
+                        <option value="Smart Sticks">Smart Sticks</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qtySelect">Quantity</label>
+                    <select class="form-control" id="qtySelect">
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="addButton">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container-fluid">
+    <h3>Current Shopping List</h3>
+    <table class="table">
+        <thead>
+            <th scope="col" class="d-none">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col" class ="d-none">Purchased?</th>
+            <th scope="col">Mark Purchased</th>
+        </thead>
+        <tbody id="unpurchasedTbody">
+        </tbody>
+    </table>
+</div>
+<br>
+<div class="container-fluid">
+    <h3>Here are some of our favorite foods and supplements</h3>
+</div>
+<br>
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <a href="https://www.petflow.com/product/fromm/fromm-gold-adult-dry-dog-food">
+                    <img src="/img/fromm_gold.jpg" alt="fromm">
+                </a>             
+            </div>
+            <div class="col-md-3">
+                <h5>Fromm Adult/Gold</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Pup: Nellie</li>
+                    <li class="list-group-item">Price: $52</li>
+                    <li class="list-group-item">Supply: 1.5 Months</li>
+                    <li class="list-group-item">Grain-Free and Family Owned</li>
+                    <li class="list-group-item">Click the picture to visit online vendor</li>
+                </ul>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <a href="https://www.chewy.com/smartbones-smartsticks-peanut-butter/dp/53157">
+                    <img src="/img/zeekTreats.jpg" alt="Zeek Treats">
+                </a>             
+            </div>
+            <div class="col-md-3">
+                <h5>Smart Stick Treats</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Pup: Zeek</li>
+                    <li class="list-group-item">Price: $11</li>
+                    <li class="list-group-item">Supply: 2 Months</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <a href="https://www.walgreens.com/store/c/nutri-vet-bladder-control-chewables-for-dogs">
+                    <img src="/img/cranberry.jpg" alt="bladder">
+                </a>             
+            </div>
+            <div class="col-md-3">
+                <h5>Nutri-Vet Bladder Control</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Pup: Nellie</li>
+                    <li class="list-group-item">Price: $12</li>
+                    <li class="list-group-item">Supply: 1.5 Months</li>
+                    <li class="list-group-item">Non-toxic bladder support</li>
+                </ul>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <a href="https://www.chewy.com/zignature-turkey-limited-ingredient">
+                    <img src="/img/zignature.jpg" alt="Zignature Turkey">
+                </a>             
+            </div>
+            <div class="col-md-3">
+                <h5>Zignature Turkey</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Pup: Zeek</li>
+                    <li class="list-group-item">Price: $58</li>
+                    <li class="list-group-item">Supply: 1 Months</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/script_food.js"></script>

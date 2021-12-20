@@ -1,0 +1,15 @@
+#carouselContainer{
+    max-width: 765px;
+    max-height: 1008px;
+}
+
+#termsScrollDiv{
+    max-height: 500px;
+    border: solid grey 1px;
+    border-radius: 1mm;
+    background-color: rgb(248, 244, 244);
+}
+
+#centeredText{
+    text-align: center;
+}

@@ -1,0 +1,44 @@
+<br>
+<div class="container-fluid">
+    <h3>Our Favorite Dogpark</h3>
+</div>
+<div class="container-fluid" id="dogPark">
+    <div class="row">
+        <div class="col-md-5">
+            <a href="https://www.lynnwoodwa.gov/Community/Play-Lynnwood/Parks-Trails-and-Open-Space/Lynndale-Park-Off-Leash-Dog-Area">
+                <img src="/img/dogPark.jpg" alt="Dog Park">
+            </a>             
+        </div>
+        <div class="col-md-3">
+            <h5>Lynndale Dog Park</h5>
+            <ul class="list-group">
+                <li class="list-group-item">Only a couple miles from home</li>
+                <li class="list-group-item">100% Free</li>
+                <li class="list-group-item">On/Off leash areas</li>
+                <li class="list-group-item"><a href="/docs/dogParkRules.pdf" download="Dog Park Rules" class="btn btn-primary">Dog Park Rules</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container-fluid">
+    <h3>Check the weather in Lynnwood!</h3>
+    <p>** this form submits data to /exercise via POST and refreshes page to display weather **</p>
+    <form class="form-inline" action="http://flip3.engr.oregonstate.edu:6032/exercise" method="post">
+        <input type="text" class="form-control mb-2 mr-sm-2" Placeholder="Lynnwood" disabled>
+        <input type="text" class="form-control mb-2 mr-sm-2" Placeholder="WA" disabled>
+        <button type="submit" class="btn btn-primary mb-2" id="weatherSubmit">Check Weather</button>
+    </form>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <ul class="list-group">
+                {{#each weatherStuff}}
+                <li class="list-group-item">{{this.key}}: {{this.value}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</div>
