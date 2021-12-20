@@ -1,0 +1,82 @@
+<br>
+<div class="container">
+    <h4>INSERT</h4>
+    <form action="/purchases" method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="purchase_id">Purchase ID</label>
+                <input type="number" class="form-control" id="purchase_id" name="purchase_id" aria-describedby="id_help" placeholder="Auto" disabled>
+                <small id="id_help" class="form-text text-muted">System Generated</small>
+            </div>
+            <div class="form-group col-md-2">
+                    <label for="customer_id">Customer ID</label>
+                    <select class="form-control" id="customer_id" name="customer_id">
+                        {{#each filter_values}}
+                        <option value={{this.customer_id}}>{{this.name_first}} {{this.name_last}}</option>
+                        {{/each}}
+                    </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" placeholder="2020-12-31">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="insert" value=1>Add Purchase</button>
+    </form>
+</div>
+<br>
+<br>
+<div class="container">
+    <h4>SELECT / UPDATE / DELETE</h4>
+    <form action="/purchases" method="GET" class="form-group">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="customer_id">Filter Customer Name</label>
+                <select class="form-control" id="customer_id" name="filter">
+                    {{#each filter_values}}
+                    <option value={{this.customer_id}}>{{this.name_first}} {{this.name_last}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Purchase ID</th>
+                <th scope="col">Customer ID</th>
+                <th scope="col">Date</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each rows}}
+            <form>
+                <tr>
+                    <td>
+                        {{this.purchase_id}}
+                    </td>
+                    <td>
+                        <select class="form-control" name="customer_id" value={{this.customer_id}}>
+                            {{#each ../filter_values}}
+                                <option value={{this.customer_id}} {{#if (ifEquals this.customer_id ../this.customer_id)}} selected {{/if}}>{{this.name_first}} {{this.name_last}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="date" placeholder={{this.date}} onfocus="(this.type='date')" value={{this.date}}>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-secondary" name="update" value={{this.purchase_id}} formmethod="POST">Update</button>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" name="delete" value={{this.purchase_id}} formmethod="GET">Delete</button>
+                    </td>
+                </tr>
+            </form>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

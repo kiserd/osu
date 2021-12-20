@@ -1,0 +1,82 @@
+<br>
+<div class="container">
+    <h4>INSERT</h4>
+    <form action="/products" method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="product_id">Product ID</label>
+                <input type="number" class="form-control" id="product_id" name="product_id" aria-describedby="id_help" placeholder="Auto" disabled>
+                <small id="id_help" class="form-text text-muted">System Generated</small>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Premium Kibble">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="price">Price</label>
+                <input type="number" class="form-control" id="price" name="price" placeholder="75.00" step=0.01 min=0>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="stock">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" placeholder="3" min=0>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="insert" value=1>Add Product</button>
+    </form>
+</div>
+<br>
+<br>
+<div class="container">
+    <h4>SELECT / UPDATE / DELETE</h4>
+    <form action="/products" method="GET" class="form-group">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="description">Filter Description</label>
+                <select class="form-control" id="description" name="filter">
+                    {{#each filter_values}}
+                    <option value="{{this.description}}">{{this.description}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product ID</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each rows}}
+            <form>
+                <tr>
+                    <td>
+                        {{this.product_id}}
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" id="description" name="description" value="{{this.description}}" placeholder="{{this.description}}">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" id="price" name="price" value={{this.price}} placeholder={{this.price}}>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" id="stock" name="stock" value={{this.stock}} placeholder={{this.stock}}>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-secondary" name="update" value={{this.product_id}} formmethod="POST">Update</button>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" name="delete" value={{this.product_id}} formmethod="GET">Delete</button>
+                    </td>
+                </tr>
+            </form>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

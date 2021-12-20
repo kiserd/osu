@@ -1,0 +1,83 @@
+<br>
+<div class="container">
+    <h4>INSERT</h4>
+    <form action="/customers" method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="customer_id">Customer ID</label>
+                <input type="number" class="form-control" id="customer_id" name="customer_id" aria-describedby="id_help" placeholder="Auto" disabled>
+                <small id="id_help" class="form-text text-muted">System Generated</small>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="name_first">First Name</label>
+                <input type="text" class="form-control" id="name_first" name="name_first" placeholder="Jane">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="name_last">Last Name</label>
+                <input type="text" class="form-control" id="name_last" name="name_last" placeholder="Doe">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="jane.doe@gmail.com">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="insert" value=1>Add Customer</button>
+    </form>
+</div>
+<br>
+
+<br>
+<div class="container">
+    <h4>SELECT / UPDATE / DELETE</h4>
+    <form action="/customers" method="GET" class="form-group">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="name_last">Filter Last Name</label>
+                <select class="form-control" id="name_last" name="filter">
+                    {{#each filter_values}}
+                    <option value={{this.name_last}}>{{this.name_last}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Customer ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each rows}}
+            <form>
+                <tr>
+                    <td>
+                        {{this.customer_id}}
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="name_first" value={{this.name_first}} placeholder={{this.name_first}}>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="name_last" value={{this.name_last}} placeholder={{this.name_last}}>
+                    </td>
+                    <td>
+                        <input type="email" class="form-control" name="email" value={{this.email}} placeholder={{this.email}}>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-secondary" name="update" value={{this.customer_id}} formmethod="POST">Update</button>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" name="delete" value={{this.customer_id}} formmethod="GET">Delete</button>
+                    </td>
+                </tr>
+            </form>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

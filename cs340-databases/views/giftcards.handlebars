@@ -1,0 +1,90 @@
+<br>
+<div class="container">
+    <h4>INSERT</h4>
+    <form action="/giftcards" method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="gift_card_id">Giftcard ID</label>
+                <input type="number" class="form-control" id="gift_card_id" name="gift_card_id" aria-describedby="id_help" placeholder="Auto" disabled>
+                <small id="id_help" class="form-text text-muted">System Generated</small>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="customer_id">Customer ID</label>
+                <select class="form-control" id="customer_id" name="customer_id">
+                    {{#each filter_values}}
+                    <option value={{this.customer_id}}>{{this.name_first}} {{this.name_last}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="total_price">Price</label>
+                <input type="number" class="form-control" id="total_price" name="total_price" placeholder="50.00" step=0.01 min=0>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="total_used">Amount Used</label>
+                <input type="number" class="form-control" id="total_used" name="total_used" placeholder="0.00" step=0.01 min=0>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="insert" value=1>Add Giftcard</button>
+    </form>
+</div>
+<br>
+<br>
+<div class="container">
+    <h4>SELECT / UPDATE / DELETE</h4>
+    <form action="/giftcards" method="GET" class="form-group">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="customer_id">Filter Customer Name</label>
+                <select class="form-control" id="customer_id" name="filter">
+                    {{#each filter_values}}
+                    <option value={{this.customer_id}}>{{this.name_first}} {{this.name_last}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Giftcard ID</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Price</th>
+                <th scope="col">Used</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each rows}}
+            <form>
+                <tr>
+                    <td>
+                        {{this.gift_card_id}}
+                    </td>
+                    <td>
+                        <select class="form-control" name="customer_id" id="customer_id">
+                            {{#each ../filter_values}}
+                            <option value={{this.customer_id}} {{#if (ifEquals this.customer_id ../this.customer_id)}} selected {{/if}}>{{this.name_first}} {{this.name_last}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="total_price" value={{this.total_price}} placeholder={{this.total_price}}>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="total_used" value={{this.total_used}} placeholder={{this.total_used}}>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-secondary" name="update" value={{this.gift_card_id}} formmethod="POST">Update</button>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" name="delete" value={{this.gift_card_id}} formmethod="GET">Delete</button>
+                    </td>
+                </tr>
+            </form>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

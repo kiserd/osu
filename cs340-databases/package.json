@@ -1,0 +1,26 @@
+{
+  "name": "osu-cs340-project",
+  "version": "1.0.0",
+  "description": "group project - kylog pet depot",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiserd/OSU-CS340-Project.git"
+  },
+  "author": "kylie chambers and donald logan kiser",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kiserd/OSU-CS340-Project/issues"
+  },
+  "homepage": "https://github.com/kiserd/OSU-CS340-Project#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.0",
+    "mysql": "^2.18.1",
+    "pg": "^8.6.0"
+  }
+}

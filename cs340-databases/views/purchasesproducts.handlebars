@@ -1,0 +1,85 @@
+<br>
+<div class="container">
+    <h4>INSERT</h4>
+    <form action="/purchasesproducts" method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="purchase_product_id">Purchase Product ID</label>
+                <input type="number" class="form-control" id="purchase_product_id" name="purchase_product_id" aria-describedby="id_help" placeholder="Auto" disabled>
+                <small id="id_help" class="form-text text-muted">System Generated</small>
+            </div>
+            <div class="form-group col-md-2">
+                    <label for="purchase_id">Purchase ID, Name</label>
+                    <select class="form-control" id="purchase_id" name="purchase_id">
+                        {{#each purchase_ids}}
+                        <option value={{this.purchase_id}}>{{this.purchase_id}}, {{this.name_first}} {{this.name_last}}</option>
+                        {{/each}}
+                    </select>
+            </div>
+            <div class="form-group col-md-2">
+                    <label for="product_id">Product Name</label>
+                    <select class="form-control" id="product_id" name="product_id">
+                        {{#each product_ids}}
+                        <option value={{this.product_id}}>{{this.description}}</option>
+                        {{/each}}
+                    </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="quantity">Quantity</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="2" min=0>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="insert" value=1>Add Purchase Product</button>
+    </form>
+</div>
+<br>
+<br>
+<div class="container">
+    <h4>SELECT / UPDATE / DELETE</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Purchase Product ID</th>
+                <th scope="col">Purchase ID, Customer Name</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each pp}}
+            <form>
+                <tr>
+                    <td>
+                        {{this.purchase_product_id}}
+                    </td>
+                    <td>
+                        <select class="form-control" name="purchase_id" id="purchase_id">
+                            {{#each ../purchase_ids}}
+                            <option value={{this.purchase_id}} {{#if (ifEquals this.purchase_id ../this.purchase_id)}} selected {{/if}}>{{this.purchase_id}}, {{this.name_first}} {{this.name_last}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="product_id" id="purchase_id">
+                            {{#each ../product_ids}}
+                            <option value={{this.product_id}} {{#if (ifEquals this.product_id ../this.product_id)}} selected {{/if}}>{{this.description}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="quantity" value={{this.quantity}} placeholder={{this.quantity}}>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-secondary" name="update" value={{this.purchase_product_id}} formmethod="POST">Update</button>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-danger" name="delete" value={{this.purchase_product_id}} formmethod="GET">Delete</button>
+                    </td>
+                </tr>
+            </form>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
