@@ -1,0 +1,96 @@
+<br/>
+    <div class="container">
+                {{#if isModified}}
+                <div class="row">
+                    <div class="col-md-9">
+                <div class="alert alert-{{modifyColor}}" role="alert">
+                    <h5 class="alert-heading"><b>{{modifyName}}</b> has been {{modifyAction}} your Recipe Book. <a class="alert-link" href="/my_recipes?{{undoUrl}}={{modifyId}}&n={{modifyName}}">Undo?</a></h5>
+                </div>
+                </div>
+                </div>
+                {{/if}}
+        <div class="row py-5 ">
+            <div class="col-md-11">
+                <div class="row d-flex align-items-center justify-content-between">
+                <div class="col">
+                <h1>Recipe Book</h1>
+                <p>This is a list of your saved recipes.</p>
+                <p>Want to add a recipe from our collection? <a href="/choose_recipe"> Browse Recipes.</a></p>
+                <p>Want to build your own recipe? <a href="/build_recipe"> Build Recipe.</a></p>
+                </div>
+                <div class="col">
+                 <div class="col-md-6 mt-0"><img style="height:14rem;"src="reading-corner-colour.svg"></div>
+                 </div>
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <h2>Saved Recipes</h2>
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date Added</th>
+                            <th>Ethical Impact</th>
+                            <th>View/Edit</th>
+                            <th>Delete</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each myRecipes}}
+                        <tr id="{{this.id}}" value="{{this.name}}">
+                            <td>
+                                <b>{{this.name}}</b>
+                                <br/>
+                                <small>{{this.type}}</small>
+                            </td>
+                            <td>{{this.date}}</td>
+                            <td ><span class="badge badge-{{this.impact_color}}">{{this.impact}}</span></td>
+                            <td>
+                                <form action='/view_ingredients' method="get">
+                                    <div class="form-group">
+                                        <button type="submit" name="recipe_id" value="{{this.id}}" class="btn btn-outline-info">View/Edit</button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/my_recipes" method="get">
+                                    <div class="form-group">
+                                        <input type="hidden" name="n" value="{{this.name}}">
+                                        <button type="submit" name="delete_id" value="{{this.id}}" class="btn btn-outline-danger">Delete</button>
+                                    </div>
+                                    
+                                </form>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <style>
+            /* https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
+            .blinky {
+            animation: blinker 1s linear infinite;
+            }
+
+            @keyframes blinker {
+            50% {
+                opacity: 0;
+                background-color: rgb(162, 252, 255);
+            }
+            }
+        </style>
+        <script>
+            // Blinks hash-linked table row for two seconds upon page-load.
+            var hash = window.location.hash.substr(1);
+            if(hash != ""){
+                document.getElementById(hash).classList.add("blinky")
+                setTimeout(()=>{document.getElementById(hash).classList.remove("blinky")}, 2000)
+            }
+        </script>
+    </div> 

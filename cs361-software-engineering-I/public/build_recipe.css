@@ -1,0 +1,180 @@
+/* https://codepen.io/danichk/pen/ojpRyg */
+#recipeListContainer {
+    background: white;
+    background-image: linear-gradient(90deg, rgba(200,0,0,.2) 50%, transparent 0),
+      linear-gradient(rgba(200,0,0,.5) 50%, transparent 0);
+    background-size: 30px 30px;
+  }
+
+#ingredientList{
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+#userRecipeName::-webkit-input-placeholder {
+  text-align: center;
+}
+
+#userRecipeName:-moz-placeholder { /* Firefox 18- */
+  text-align: center;  
+}
+
+#userRecipeName::-moz-placeholder {  /* Firefox 19+ */
+  text-align: center;  
+}
+
+#userRecipeName:-ms-input-placeholder {  
+  text-align: center; 
+}
+
+#userRecipeName {  
+  text-align: center; 
+}
+
+
+.recipeCardBody{
+  display: flex;
+  margin: auto;
+  
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.recipeCardFull{
+  margin-top:0.5rem;
+}
+
+.recipeRow{
+  display:grid;
+  grid-template-columns:auto auto auto;
+  flex:content;
+}
+
+.recipeDivCardBody{
+
+  padding: 0.75rem !important;
+}
+
+.ingredientDivCardBody{
+  display:grid;
+  grid-template-rows: auto auto;
+  padding: 0.75rem !important;
+  width:250px;
+}
+
+#recipeListTable{
+  background-color: white;
+}
+
+.pulse {
+  animation: blinker 0.4s ease;
+  }
+
+  @keyframes blinker {
+  50% {
+      transform: scale(1.1);
+  }
+  }
+
+#sendRecipeButton{
+  margin: auto;
+  display:block;
+  margin-top: 1rem;
+}
+
+#ingredientListTitle{
+  text-align: center;
+}
+
+#recipeListTitle{
+  text-align: center;
+}
+
+.ingredientDiv{
+  flex-direction: row !important;
+  cursor:pointer;
+  border-width: 2px;
+}
+
+.ingredientDiv:hover{
+  transform: scale(1.05);
+  z-index: 999;
+  border-width:0px;
+  transition:0.1s ease;
+  border: 2px solid black !important;
+  
+}
+
+.ingredientDivCardBody:hover{
+  background:
+    linear-gradient(rgb(255, 255, 255),#fff),
+    linear-gradient(#fff,#fff),
+    rgba(43, 43, 43, 0.452);
+  color: white;
+  background-position:center;
+  background-size: 35% 8px,8px 50%; /*thickness = 2px, length = 50% (25px)*/
+  background-repeat:no-repeat;
+
+}
+
+.pointFivePad{
+  padding-top: 0.5rem;
+}
+
+.ingredientColor{
+  height:45px;
+  width:45px;
+  margin:auto;
+}
+
+.btn-focus-hover{
+  outline: 0;
+box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+color: #0056b3;
+text-decoration: underline;
+}
+
+.form-group-sm{
+  padding-bottom:0.5rem;
+}
+
+.ingredientImpact{
+  line-height: 1.5 !important;
+  float:right;
+}
+
+.recipeImpact{
+  line-height: 2 !important;
+  float:right;
+}
+
+
+.ingredientType{
+  line-height: 1.5 !important;
+  float:left;
+}
+
+.ingredientIcon{
+  width:34px;
+  height:34px;
+  display:block;
+  margin:auto;
+  margin-top:0.4rem;
+}
+
+#recipeListTitleDiv{
+    background:#a6d8dd;
+    height: auto;
+    border-radius: 5px;
+}
+
+#ingredientListTitleDiv{
+  background:#fce0ae;
+  height: 5rem;
+  border-radius: 5px;
+}
+
+.no-show{
+  display: none;
+}
