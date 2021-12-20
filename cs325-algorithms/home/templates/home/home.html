@@ -1,0 +1,45 @@
+{% extends "home/base.html" %}
+{% block content %}
+<br>
+<h3>Sudoku - Get Started!</h3>
+<div class="container-fluid">
+    <ul class="list-group">
+        <li class="list-group-item">Choose the 'Puzzle' page to attempt the sudoku puzzle.</li>
+        <li class="list-group-item">Choose the 'Solved' page to check out the solution.</li>
+        <li class="list-group-item">Go ahead and submit the solved puzzle and the algorithm will verify the 'certificate'.</li>
+    </ul>
+</div>
+<br>
+<h3>Rules</h3>
+<div class="container-fluid">
+    <ul class="list-group">
+        <li class="list-group-item">Start with a 9x9 grid of squares made up of 3x3 grids of squares.</li>
+        <li class="list-group-item">Some squares/cells will already have numbers entered in them.</li>
+        <li class="list-group-item">Fill in empty squares such that all rows, columns, and 3x3 grids contain the numbers 1-9 EXACTLY ONCE.</li>
+    </ul>
+</div>
+<br>
+<h3>Verification Algorithm</h3>
+<div class="container-fluid">
+    <ul class="list-group">
+        <li class="list-group-item">For time complexity analysis, let n = 3.</li>
+        <li class="list-group-item">The first step in verification is looping through the n^4 cells to organize them in a matrix of row elements - this step is completed in O(c_1n^4) time</li>
+        <li class="list-group-item">Next, we loop through the n^4 cells to organize them in a matrix of column elements - this step is completed in O(c_2n^4) time.</li>
+        <li class="list-group-item">Finally, we loop through the n^4 cells to organize them in a matrix smaller of 3 x 3 grid elements - this step is completed in O(c_3n^4) time.</li>
+        <li class="list-group-item">Note, the time complexity for the above operations is n^4, because we only process each of the n^4 exactly once (with some constant time operations for each element).</li>
+        <li class="list-group-item">Next, we attempt to verify the three matrices as viable solutions for the Sudoku puzzle.</li>
+        <li class="list-group-item">For each of the matrices of n^4 elements, we loop through each of the n^4 elements a maximum of twice and perform constant time operations for each pass through the elements.</li>
+        <li class="list-group-item">Finally, we interpret the results of the verification step and populate some messaging to return to the user in O(1) time.</li>
+        <li class="list-group-item">The overall time complexity is as follows: O(n^4) = O(c_1n^4) + O(c_2n^4) + O(c_3 n^4) + O(c_4n^4 + c_5n^4) + O(1)</li>
+    </ul>
+</div>
+<br>
+<h3>Technology / Programming Languages</h3>
+<div class="container-fluid">
+    <ul class="list-group">
+        <li class="list-group-item">Backend Language: Python</li>
+        <li class="list-group-item">Request Listening Framework: Django</li>
+        <li class="list-group-item">Website Hosting Platform: Heroku</li>
+    </ul>
+</div>
+{% endblock content %}
