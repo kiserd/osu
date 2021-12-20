@@ -1,0 +1,3 @@
+1. That the total of all items appears in the app bar and is updated when a new post is created.
+3. The application usage data in Firebase Analytics.
+4. Triggering some code that causes the app to crash and notify Sentry or Firebase Crashlytics.
