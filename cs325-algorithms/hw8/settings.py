@@ -12,16 +12,21 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 import environ
 
 # get access to environment var
-env = environ.Env()
-env.read_env(env.str('ENV_PATH', '../.env.local'))
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Set the project base directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env.local'))
+
+# env.read_env(env.str('ENV_PATH', '../.env.local'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -84,7 +89,7 @@ WSGI_APPLICATION = 'hw8.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR + '/db.sqlite3',
     }
 }
 
@@ -127,6 +132,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Configure Django App for Heroku.
-django_heroku.settings(locals())
