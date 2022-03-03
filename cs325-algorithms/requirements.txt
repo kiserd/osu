@@ -1,3 +1,4 @@
 django
 requests
 django-environ
+django-livereload-server
