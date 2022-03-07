@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import random
+# from struct import sudoku
 
 def home(request):
     return render(request, 'home/home.html')
@@ -34,6 +36,221 @@ def check(request):
         context["valid"] = False
         context["note"] = "Whoops, that puzzle was not valid!"
     return render(request, 'home/check.html', context)
+
+class SudokuBoard:
+    """
+    represents a 9x9 sudoku board
+    generating algorithm: https://stackoverflow.com/questions/6924216/how-to-generate-sudoku-boards-with-unique-solutions#:~:text=Start%20with%20an%20empty%20board,at%20least%20one%20valid%20solution.
+    """
+    def __init__(self, n):
+        self.n = n
+        self.rows = [SudokuRow(n)] * (n**2)
+        self.cols = [SudokuCol(n)] * (n**2)
+        self.squares = [SudokuSquare(n)] * (n**2)
+        self.count = n**4
+        self.solved = [
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [4, 5, 6, 7, 8, 9, 1, 2, 3],
+            [7, 8, 9, 1, 2, 3, 4, 5, 6],
+            [2, 3, 1, 5, 6, 4, 8, 9, 7],
+            [5, 6, 4, 8, 9, 7, 2, 3, 1],
+            [8, 9, 7, 2, 3, 1, 5, 6, 4],
+            [3, 1, 2, 6, 4, 5, 9, 7, 8],
+            [6, 4, 5, 9, 7, 8, 3, 1, 2],
+            [9, 7, 8, 3, 1, 2, 6, 4, 5]
+        ]
+        # shuffle starting board to generate random valid board
+        self.shuffle_vals()
+        self.shuffle_rows()
+        self.shuffle_columns()
+        self.shuffle_row_blocks()
+        self.shuffle_column_blocks()
+        self.grid = self.solved
+
+    def build_starting_grid(self):
+        # use set to keep track of removed cells
+        visited = set()
+
+
+    def shuffle_column_blocks(self):
+        # seed the random number generator
+        random.seed
+        for j in range(self.n):
+            adj = random.randint(0, self.n - 1)
+            for i in range(self.n):
+                self.swap_columns(j * self.n + i, adj * self.n + i)
+
+    def shuffle_row_blocks(self):
+        # seed the random number generator
+        random.seed
+        for i in range(self.n):
+            adj = random.randint(0, self.n - 1)
+            for j in range(self.n):
+                self.swap_rows(i * self.n + j, adj * self.n + j)
+
+    def shuffle_columns(self):
+        # seed the random number generator
+        random.seed
+        for j in range(self.n**2):
+            adj = random.randint(0, self.n - 1)
+            new = (j // 3 * 3) + adj
+            self.swap_columns(j, new)
+
+    def shuffle_rows(self):
+        # seed the random number generator
+        random.seed
+        for i in range(self.n**2):
+            adj = random.randint(0, self.n - 1)
+            new = (i // 3 * 3) + adj
+            self.swap_rows(i, new)
+
+    def swap_columns(self, c1, c2):
+        for i in range(self.n**2):
+            self.solved[i][c1], self.solved[i][c2] = self.solved[i][c2], self.solved[i][c1]
+
+    def swap_rows(self, r1, r2):
+        self.solved[r1], self.solved[r2] = self.solved[r2], self.solved[r1]
+
+    def shuffle_vals(self):
+        # seed the random number generator
+        random.seed
+        for i in range(1, 10):
+            rep = random.randint(1, 9)
+            for r in range(len(self.solved)):
+                for c in range(len(self.solved[0])):
+                    if self.solved[r][c] == rep:
+                        self.solved[r][c] = i
+                    elif self.solved[r][c] == i:
+                        self.solved[r][c] = rep
+
+    def gen_solved_board(self):
+        """
+        DESCRIPTION:    builds a random fully populated (solved) sudoku board
+                        via guess and check
+
+        INPUT:          NA
+
+        RETURN:         NA, populates object's properties/fields
+        """
+        # seed the random number generator
+        random.seed
+        # continue randomly placing values until board is fully populated
+        row = col = val = None
+        while self.count < self.n**4:
+            # get a random value, row, and column to place
+            row = random.randint(0, 8)
+            col = random.randint(0, 8)
+            val = random.randint(1, 9)
+            # print('row: ', row)
+            # print('col: ', col)
+            # print('val: ', val)
+            # calculate square index
+            sq = (row // 3) * 3 + (col // 3)
+            # print('sq: ', sq)
+            # handle case of valid placement
+            if self.placement_is_valid(row, col, sq, val):
+                self.place_val(row, col, sq, val)
+                self.board[row][col] = val
+                self.count += 1
+
+
+    def place_val(self, row, col, sq, val):
+        """
+        DESCRIPTION:    
+
+        INPUT:          
+
+        RETURN:         
+        """
+        # place vals in groups
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
+            group.place_val(val)
+
+    def placement_is_valid(self, row, col, sq, val):
+        """
+        DESCRIPTION:    
+
+        INPUT:          
+
+        RETURN:         
+        """
+        # determine if val is already placed for any grouping
+        groups = [self.rows[row], self.cols[col], self.squares[sq]]
+        for group in groups:
+            if group.val_is_placed(val):
+                return False
+        # all groupings valid, indicate to calling function
+        return True
+        
+
+
+class SudokuGroup:
+    """
+    represents a grouping of cells on a sudoku board
+    """
+    def __init__(self, n):
+        self.n = n
+        self.values = set()
+        self.complete = False
+
+    def place_val(self, val):
+        """
+        DESCRIPTION:    adds a number to the grouping's values property
+
+        INPUT:          val (int): value being added to the group
+
+        RETURN:         boolean indication of successful add
+        """
+        # handle case of value already added
+        if val in self.values:
+            return False
+        # handle case of eligible value
+        self.values.add(val)
+        # update complete property, if applicable
+        if len(self.values) == self.n**2:
+            self.complete = True
+        return True
+
+    def val_is_placed(self, val):
+        """
+        DESCRIPTION:    
+
+        INPUT:          
+
+        RETURN:         
+        """
+        return val in self.values
+
+class SudokuRow(SudokuGroup):
+    """
+    represents a row on a n x n sudoku board
+    """
+    
+
+class SudokuCol(SudokuGroup):
+    """
+    represents a column on a n x n sudoku board
+    """
+    
+
+class SudokuSquare(SudokuGroup):
+    """
+    represents a square on a n x n sudoku board
+    """
+    
+
+
+def puzz(request):
+    """
+    DESCRIPTION:    builds valid starting sudoku puzzle 2D array
+
+    INPUT:          request: GET request for /puzzle
+
+    RETURN:         Sudoku column and row values
+    """
+    # build array skeleton
+    res = [[None] * 9 for _ in range(9)]
+
 
 def get_rows(query_dict: {}) -> []:
     """

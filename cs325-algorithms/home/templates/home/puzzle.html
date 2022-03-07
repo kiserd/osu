@@ -1,7 +1,20 @@
 {% extends "home/base.html" %}
 {% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'home/style.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'home/style.css' %}"> -->
+    <div class="mx-auto w-3/4 flex self-center justify-center bg-custom-warm-extraLight">
+        <div class="grid grid-cols-9">
+            {% for _ in '012345678'|make_list %}
+            <div class="col-span-1 grid grid-rows-9">
+                {% for _ in '012345678'|make_list %}
+                <div class="bg-custom-warm-light w-12 h-12 border-2 border-custom-cool-dark flex justify-center place-items-center">
+                    5
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
     <form action="/check" method="GET">
         <table class="table">
             <tbody>

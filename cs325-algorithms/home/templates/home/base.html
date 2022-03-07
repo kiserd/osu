@@ -1,25 +1,22 @@
-{% load static %}
-
-<!doctype html>
+{% load tailwind_tags %}
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind-output.css' %}">
-
-    <title>OSU CS325 - kiserd - Portfolio</title>
-  </head>
-  <body class="bg-gray-400">
-    <nav>
+    <title>CS325 Sudoku</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+	</head>
+  <body class="bg-custom-background font-serif leading-normal tracking-normal">
+    <nav class="text-custom-text-primary">
         <a class="font-extrabold" href="#">Kiserd</a>
         <button class="" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class=""></span>
         </button>
         <div class="" id="navbarNavAltMarkup">
             <div class="">
-            <a class="font-extrabold" href="/">Home <span class="">(current)</span></a>
+            <a class="font-extrabold" href="/">Home</a>
             <a class="font-extrabold" href="/puzzle">Puzzle</a>
             <a class="" href="/puzzle_solved">Solved</a>
             </div>
