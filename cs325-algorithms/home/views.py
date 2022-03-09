@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import random
+import copy
 # from struct import sudoku
 
 def home(request):
@@ -43,10 +44,12 @@ class SudokuBoard:
     generating algorithm: https://stackoverflow.com/questions/6924216/how-to-generate-sudoku-boards-with-unique-solutions#:~:text=Start%20with%20an%20empty%20board,at%20least%20one%20valid%20solution.
     """
     def __init__(self, n):
+        # seed random number generator
+        random.seed
         self.n = n
-        self.rows = [SudokuRow(n)] * (n**2)
-        self.cols = [SudokuCol(n)] * (n**2)
-        self.squares = [SudokuSquare(n)] * (n**2)
+        self.rows = [SudokuRow(n) for _ in range(n**2)]
+        self.cols = [SudokuCol(n) for _ in  range(n**2)]
+        self.squares = [SudokuSquare(n) for _ in range(n**2)]
         self.count = n**4
         self.solved = [
             [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -65,16 +68,70 @@ class SudokuBoard:
         self.shuffle_columns()
         self.shuffle_row_blocks()
         self.shuffle_column_blocks()
-        self.grid = self.solved
+        self.grid = []
+        for row in self.solved:
+            self.grid.append(copy.copy(row))
+        self.empties = set()
+        self.filled = {(i, j) for i in range(n**2) for j in range(n**2)}
+        self.build_starting_grid()
 
     def build_starting_grid(self):
-        # use set to keep track of removed cells
-        visited = set()
+        # seed the random number generator
+        # random.seed
+        # remove random cells until solution is no longer unique
+        cells = [(i, j) for i in range(self.n**2) for j in range(self.n**2)]
+        random.shuffle(cells)
+        r = c = sq = val = None
+        while cells:
+            r, c = cells.pop()
+            sq = (r // 3) * 3 + (c // 3)
+            val = self.solved[r][c]
+            self.remove_val(r, c, sq, val)
+            # for row in self.rows:
+            #     print('row values: ', row.values)
+            # print('count_solutions: ', self.count_solutions())
+            if self.count_solutions() > 1:
+                self.place_val(r, c, sq, val)
+            print('cells: ', len(cells))
+            for row in self.grid:
+                print(row)
+            print('===================')
 
+    def count_solutions(self):
+        # random.seed
+        # handle base case
+        if not self.empties:
+            return 1
+        # get random empty cell to fill
+        rand_idx = random.randint(0, len(self.empties) - 1)
+        r, c = list(self.empties)[rand_idx]
+        # get square index
+        sq = (r // 3) * 3 + (c // 3)
+        # determine possible values
+        possible_vals = {i for i in range(self.n**2)}
+        groups = [self.rows[r], self.cols[c], self.squares[sq]]
+        for group in groups:
+            possible_vals -= group.values
+        # print('possible_vals: ', possible_vals)
+        res = 0
+        for val in range(1, 10):
+            if self.placement_is_valid(r, c, sq, val):
+                self.place_val(r, c, sq, val)
+                res += self.count_solutions()
+                self.remove_val(r, c, sq, val)
+        return res
+
+    def get_empties(self):
+        empties = set()
+        for i in range(self.n**2):
+            for j in range(self.n**2):
+                if not self.grid[i][j]:
+                    empties.add((i, j))
+        return empties
 
     def shuffle_column_blocks(self):
         # seed the random number generator
-        random.seed
+        # random.seed
         for j in range(self.n):
             adj = random.randint(0, self.n - 1)
             for i in range(self.n):
@@ -82,7 +139,7 @@ class SudokuBoard:
 
     def shuffle_row_blocks(self):
         # seed the random number generator
-        random.seed
+        # random.seed
         for i in range(self.n):
             adj = random.randint(0, self.n - 1)
             for j in range(self.n):
@@ -90,7 +147,7 @@ class SudokuBoard:
 
     def shuffle_columns(self):
         # seed the random number generator
-        random.seed
+        # random.seed
         for j in range(self.n**2):
             adj = random.randint(0, self.n - 1)
             new = (j // 3 * 3) + adj
@@ -98,7 +155,7 @@ class SudokuBoard:
 
     def shuffle_rows(self):
         # seed the random number generator
-        random.seed
+        # random.seed
         for i in range(self.n**2):
             adj = random.randint(0, self.n - 1)
             new = (i // 3 * 3) + adj
@@ -113,7 +170,7 @@ class SudokuBoard:
 
     def shuffle_vals(self):
         # seed the random number generator
-        random.seed
+        # random.seed
         for i in range(1, 10):
             rep = random.randint(1, 9)
             for r in range(len(self.solved)):
@@ -123,36 +180,24 @@ class SudokuBoard:
                     elif self.solved[r][c] == i:
                         self.solved[r][c] = rep
 
-    def gen_solved_board(self):
+    def remove_val(self, row, col, sq, val):
         """
-        DESCRIPTION:    builds a random fully populated (solved) sudoku board
-                        via guess and check
+        DESCRIPTION:    
 
-        INPUT:          NA
+        INPUT:          
 
-        RETURN:         NA, populates object's properties/fields
+        RETURN:         
         """
-        # seed the random number generator
-        random.seed
-        # continue randomly placing values until board is fully populated
-        row = col = val = None
-        while self.count < self.n**4:
-            # get a random value, row, and column to place
-            row = random.randint(0, 8)
-            col = random.randint(0, 8)
-            val = random.randint(1, 9)
-            # print('row: ', row)
-            # print('col: ', col)
-            # print('val: ', val)
-            # calculate square index
-            sq = (row // 3) * 3 + (col // 3)
-            # print('sq: ', sq)
-            # handle case of valid placement
-            if self.placement_is_valid(row, col, sq, val):
-                self.place_val(row, col, sq, val)
-                self.board[row][col] = val
-                self.count += 1
-
+        # place vals in groups
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
+            group.remove_val(val)
+        # place val in working grid
+        self.grid[row][col] = 0
+        # update empties and filled properties
+        self.empties.add((row, col))
+        self.filled.remove((row, col))
+        # update count
+        self.count -= 1
 
     def place_val(self, row, col, sq, val):
         """
@@ -165,6 +210,13 @@ class SudokuBoard:
         # place vals in groups
         for group in [self.rows[row], self.cols[col], self.squares[sq]]:
             group.place_val(val)
+        # place val in working grid
+        self.grid[row][col] = val
+        # update empties and filled properties
+        self.empties.remove((row, col))
+        self.filled.add((row, col))
+        # update count
+        self.count += 1
 
     def placement_is_valid(self, row, col, sq, val):
         """
@@ -190,8 +242,27 @@ class SudokuGroup:
     """
     def __init__(self, n):
         self.n = n
-        self.values = set()
-        self.complete = False
+        self.values = {i for i in range(n**2)}
+        self.complete = True
+
+    def remove_val(self, val):
+        """
+        DESCRIPTION:    removes a number to the grouping's values property
+
+        INPUT:          val (int): value being removed to the group
+
+        RETURN:         boolean indication of successful removal
+        """
+        # handle case where val has not been added to group yet
+        if val not in self.values:
+            return False
+        # handle case of eligible value
+        self.values.remove(val)
+        # update complete property, if applicable
+        if self.complete:
+            self.complete = False
+        return True
+        
 
     def place_val(self, val):
         """
