@@ -1,13 +1,13 @@
 from views import SudokuBoard
+import heapq
 
 def main():
-    s = SudokuBoard(3)
-    # s.gen_solved_board()
-    for row in s.solved:
-        print(row)
-    print('=================')
-    for row in s.grid:
-        print(row)
+    num_clues = []
+    for _ in range(50):
+        s = SudokuBoard(3)
+        heapq.heappush(num_clues, 81 - len(s.empties))
+    while num_clues:
+        print(heapq.heappop(num_clues))
 
 
 

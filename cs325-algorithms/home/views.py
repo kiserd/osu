@@ -47,9 +47,9 @@ class SudokuBoard:
         # seed random number generator
         random.seed
         self.n = n
-        self.rows = [SudokuRow(n) for _ in range(n**2)]
-        self.cols = [SudokuCol(n) for _ in  range(n**2)]
-        self.squares = [SudokuSquare(n) for _ in range(n**2)]
+        self.rows = [{i for i in range(1, n**2 + 1)} for _ in range(n**2)]
+        self.cols = [{i for i in range(1, n**2 + 1)} for _ in  range(n**2)]
+        self.squares = [{i for i in range(1, n**2 + 1)} for _ in range(n**2)]
         self.count = n**4
         self.solved = [
             [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -76,8 +76,6 @@ class SudokuBoard:
         self.build_starting_grid()
 
     def build_starting_grid(self):
-        # seed the random number generator
-        # random.seed
         # remove random cells until solution is no longer unique
         cells = [(i, j) for i in range(self.n**2) for j in range(self.n**2)]
         random.shuffle(cells)
@@ -87,47 +85,95 @@ class SudokuBoard:
             sq = (r // 3) * 3 + (c // 3)
             val = self.solved[r][c]
             self.remove_val(r, c, sq, val)
-            # for row in self.rows:
-            #     print('row values: ', row.values)
-            # print('count_solutions: ', self.count_solutions())
-            if self.count_solutions() > 1:
-                self.place_val(r, c, sq, val)
-            print('cells: ', len(cells))
-            for row in self.grid:
-                print(row)
-            print('===================')
+            # to test uniqueness, just try different values for recently
+            # removed cell
+            unique = True
+            new_val = 1
+            while unique and new_val < 10:
+                if self.placement_is_valid(r, c, sq, new_val) and new_val != val:
+                    self.place_val(r, c, sq, new_val)
+                    if self.has_solution(list(self.empties)):
+                        unique = False
+                        self.remove_val(r, c, sq, new_val)
+                        self.place_val(r, c, sq, val)
+                    else:
+                        self.remove_val(r, c, sq, new_val)
+                new_val += 1
 
-    def count_solutions(self):
-        # random.seed
+    def has_solution(self, empties):
         # handle base case
-        if not self.empties:
-            return 1
+        if not empties:
+            return True
         # get random empty cell to fill
-        rand_idx = random.randint(0, len(self.empties) - 1)
-        r, c = list(self.empties)[rand_idx]
+        r, c = empties.pop()
         # get square index
         sq = (r // 3) * 3 + (c // 3)
-        # determine possible values
-        possible_vals = {i for i in range(self.n**2)}
-        groups = [self.rows[r], self.cols[c], self.squares[sq]]
-        for group in groups:
-            possible_vals -= group.values
-        # print('possible_vals: ', possible_vals)
-        res = 0
+        # loop through potential values
+        res = False
         for val in range(1, 10):
             if self.placement_is_valid(r, c, sq, val):
                 self.place_val(r, c, sq, val)
-                res += self.count_solutions()
+                res = res or self.has_solution(empties)
                 self.remove_val(r, c, sq, val)
+                if res:
+                    return res
         return res
 
-    def get_empties(self):
-        empties = set()
-        for i in range(self.n**2):
-            for j in range(self.n**2):
-                if not self.grid[i][j]:
-                    empties.add((i, j))
-        return empties
+    def remove_val(self, row, col, sq, val):
+        """
+        DESCRIPTION:    
+
+        INPUT:          
+
+        RETURN:         
+        """
+        # place vals in groups
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
+            if val not in group:
+                return False
+            group.remove(val)
+        # update properties
+        self.grid[row][col] = 0
+        self.empties.add((row, col))
+        self.filled.remove((row, col))
+        # update count
+        self.count -= 1
+
+    def place_val(self, row, col, sq, val):
+        """
+        DESCRIPTION:    
+
+        INPUT:          
+
+        RETURN:         
+        """
+        # place vals in groups
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
+            if val in group:
+                return False
+            group.add(val)
+        # update properties
+        self.grid[row][col] = val
+        self.empties.remove((row, col))
+        self.filled.add((row, col))
+        # update count
+        self.count += 1
+
+    def placement_is_valid(self, row, col, sq, val):
+        """
+        DESCRIPTION:    
+
+        INPUT:          
+
+        RETURN:         
+        """
+        # determine if val is already placed for any grouping
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
+        # for group in groups:
+            if val in group:
+                return False
+        # all groupings valid, indicate to calling function
+        return True
 
     def shuffle_column_blocks(self):
         # seed the random number generator
@@ -179,61 +225,6 @@ class SudokuBoard:
                         self.solved[r][c] = i
                     elif self.solved[r][c] == i:
                         self.solved[r][c] = rep
-
-    def remove_val(self, row, col, sq, val):
-        """
-        DESCRIPTION:    
-
-        INPUT:          
-
-        RETURN:         
-        """
-        # place vals in groups
-        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
-            group.remove_val(val)
-        # place val in working grid
-        self.grid[row][col] = 0
-        # update empties and filled properties
-        self.empties.add((row, col))
-        self.filled.remove((row, col))
-        # update count
-        self.count -= 1
-
-    def place_val(self, row, col, sq, val):
-        """
-        DESCRIPTION:    
-
-        INPUT:          
-
-        RETURN:         
-        """
-        # place vals in groups
-        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
-            group.place_val(val)
-        # place val in working grid
-        self.grid[row][col] = val
-        # update empties and filled properties
-        self.empties.remove((row, col))
-        self.filled.add((row, col))
-        # update count
-        self.count += 1
-
-    def placement_is_valid(self, row, col, sq, val):
-        """
-        DESCRIPTION:    
-
-        INPUT:          
-
-        RETURN:         
-        """
-        # determine if val is already placed for any grouping
-        groups = [self.rows[row], self.cols[col], self.squares[sq]]
-        for group in groups:
-            if group.val_is_placed(val):
-                return False
-        # all groupings valid, indicate to calling function
-        return True
-        
 
 
 class SudokuGroup:
