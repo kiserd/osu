@@ -3,15 +3,20 @@ import heapq
 
 def main():
 
+    # for _ in range(20):
+        # print('iteration')
     s = SudokuBoard(3)
-    print('clues: ', 81 - len(s.empties))
-    print('grid: ')
+    print('outer clues: ', 81 - len(s.empties))
     for row in s.grid:
         print(row)
-    print('===================')
-    print('solved: ')
-    for row in s.solved:
-        print(row)
+        # print('grid: ')
+        # for row in s.grid:
+        #     print(row)
+        # print('===================')
+        # print('solved: ')
+        # for row in s.solved:
+        #     print(row)
+        # print('==================')
     # for row in s.grid:
     #     print(row)
     # print('================')

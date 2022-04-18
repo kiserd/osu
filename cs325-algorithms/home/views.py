@@ -48,7 +48,7 @@ class SudokuBoard:
         random.seed
         self.n = n
         self.rows = [{i for i in range(1, n**2 + 1)} for _ in range(n**2)]
-        self.cols = [{i for i in range(1, n**2 + 1)} for _ in  range(n**2)]
+        self.cols = [{i for i in range(1, n**2 + 1)} for _ in range(n**2)]
         self.squares = [{i for i in range(1, n**2 + 1)} for _ in range(n**2)]
         self.count = n**4
         self.solved = [
@@ -76,95 +76,39 @@ class SudokuBoard:
             self.grid.append(copy.copy(row))
         self.empties = set()
         self.filled = {(i, j) for i in range(n**2) for j in range(n**2)}
-        self.build_starting_grid()
+        self.build_puzzle()
 
-    def board_is_valid(self):
-        rows = [set() for _ in range(self.n**2)]
-        cols = [set() for _ in range(self.n**2)]
-        sqs = [set() for _ in range(self.n**2)]
-        for r in range(self.n**2):
-            for c in range(self.n**2):
+    def init_grid(self):
+        self.grid = []
+        for row in self.solved:
+            self.grid.append(copy.copy(row))
+        self.empties = set()
+        self.filled = {(i, j) for i in range(self.n**2) for j in range(self.n**2)}
+        self.rows = [{i for i in range(1, self.n**2 + 1)} for _ in range(self.n**2)]
+        self.cols = [{i for i in range(1, self.n**2 + 1)} for _ in range(self.n**2)]
+        self.squares = [{i for i in range(1, self.n**2 + 1)} for _ in range(self.n**2)]
+
+    def build_puzzle(self):
+        # outer loop to ensure puzzle is difficult enough
+        while self.n**4 - len(self.empties) > 40:
+            self.init_grid()
+            # remove random cells until solution is no longer unique
+            cells = [(i, j) for i in range(self.n**2) for j in range(self.n**2)]
+            random.shuffle(cells)
+            r = c = sq = val = None
+            while cells:
+                r, c = cells.pop()
                 sq = (r // 3) * 3 + (c // 3)
                 val = self.solved[r][c]
-                rows[r].add(val)
-                cols[c].add(val)
-                sqs[sq].add(val)
-        groups = [rows, cols, sqs]
-        for group in groups:
-            for row in group:
-                if len(row) != 9:
-                    print(f'{r}, {c}, {sq} invalid')
-                    return False
-        return True
-
-    def build_starting_grid(self):
-        # remove random cells until solution is no longer unique
-        cells = [(i, j) for i in range(self.n**2) for j in range(self.n**2)]
-        random.shuffle(cells)
-        r = c = sq = val = None
-        while cells:
-            r, c = cells.pop()
-            sq = (r // 3) * 3 + (c // 3)
-            val = self.solved[r][c]
-            self.remove_val(r, c, sq, val)
-            num_solutions = self.count_solutions(list(self.empties))
-
-            print('num_sols: ', num_solutions)
-            if num_solutions > 1:
-                # print(f'[{r}, {c}] = {val} could not be removed')
-                self.place_val(r, c, sq, val)
-
-    # def build_starting_grid(self):
-    #     # remove random cells until solution is no longer unique
-    #     cells = [(i, j) for i in range(self.n**2) for j in range(self.n**2)]
-    #     random.shuffle(cells)
-    #     r = c = sq = val = None
-    #     while cells:
-    #         r, c = cells.pop()
-    #         sq = (r // 3) * 3 + (c // 3)
-    #         val = self.solved[r][c]
-    #         self.remove_val(r, c, sq, val)
-    #         # to test uniqueness, just try different values for recently
-    #         # removed cell
-    #         unique = True
-    #         new_val = 1
-    #         while unique and new_val < 10:
-    #             if self.placement_is_valid(r, c, sq, new_val) and new_val != val:
-    #                 self.place_val(r, c, sq, new_val)
-    #                 if self.has_solution(list(self.empties)):
-    #                     unique = False
-    #                     self.remove_val(r, c, sq, new_val)
-    #                     self.place_val(r, c, sq, val)
-    #                 else:
-    #                     self.remove_val(r, c, sq, new_val)
-    #             new_val += 1
-
-    def has_solution(self, empties):
-        # handle base case
-        if not empties:
-            return True
-        # get random empty cell to fill
-        r, c = empties.pop()
-        # get square index
-        sq = (r // 3) * 3 + (c // 3)
-        # loop through potential values
-        res = False
-        for val in range(1, 10):
-            if self.placement_is_valid(r, c, sq, val):
-                self.place_val(r, c, sq, val)
-                res = res or self.has_solution(empties)
                 self.remove_val(r, c, sq, val)
-                if res:
-                    return res
-        return res
+                num_solutions = self.count_solutions(copy.copy(self.empties))
+                if num_solutions > 1:
+                    # print(f'[{r}, {c}] = {val} could not be removed')
+                    self.place_val(r, c, sq, val)
 
     def count_solutions(self, empties):
         # handle base case
         if not empties:
-            print('solution: ')
-            for row in self.grid:
-                print(row)
-            print('===============')
             return 1
         # get random empty cell to fill
         r, c = empties.pop()
@@ -180,8 +124,27 @@ class SudokuBoard:
                 if res > 1:
                     return res
         # attempt to return early if no solutions exist
-        if res == 0:
+        if not res:
             return 2
+        return res
+
+    def has_solution(self, empties):
+        # handle base case
+        if not empties:
+            return True
+        # get random empty cell to fill
+        r, c = empties.pop()
+        # get square index
+        sq = (r // 3) * 3 + (c // 3)
+        # loop through potential values
+        res = False
+        for val in range(1, 10):
+            if self.placement_is_valid(r, c, sq, val):
+                self.place_val(r, c, sq, val)
+                res = res or self.has_solution(copy.copy(empties))
+                self.remove_val(r, c, sq, val)
+                if res:
+                    return res
         return res
 
     def remove_val(self, row, col, sq, val):
@@ -192,10 +155,11 @@ class SudokuBoard:
 
         RETURN:         
         """
-        # place vals in groups
+        # remove val from groups
         for group in [self.rows[row], self.cols[col], self.squares[sq]]:
             if val not in group:
                 return False
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
             group.remove(val)
         # update properties
         self.grid[row][col] = 0
@@ -216,6 +180,7 @@ class SudokuBoard:
         for group in [self.rows[row], self.cols[col], self.squares[sq]]:
             if val in group:
                 return False
+        for group in [self.rows[row], self.cols[col], self.squares[sq]]:
             group.add(val)
         # update properties
         self.grid[row][col] = val
@@ -234,10 +199,28 @@ class SudokuBoard:
         """
         # determine if val is already placed for any grouping
         for group in [self.rows[row], self.cols[col], self.squares[sq]]:
-        # for group in groups:
             if val in group:
                 return False
         # all groupings valid, indicate to calling function
+        return True
+
+    def board_is_valid(self):
+        rows = [set() for _ in range(self.n**2)]
+        cols = [set() for _ in range(self.n**2)]
+        sqs = [set() for _ in range(self.n**2)]
+        for r in range(self.n**2):
+            for c in range(self.n**2):
+                sq = (r // 3) * 3 + (c // 3)
+                val = self.solved[r][c]
+                rows[r].add(val)
+                cols[c].add(val)
+                sqs[sq].add(val)
+        groups = [rows, cols, sqs]
+        for group in groups:
+            for row in group:
+                if len(row) != 9:
+                    print(f'{r}, {c}, {sq} invalid')
+                    return False
         return True
 
     def shuffle_column_blocks(self):
