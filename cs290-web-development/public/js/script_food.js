@@ -38,7 +38,7 @@ function addToList(event) {
     var name = document.getElementById("nameSelect").value;
     var qty = document.getElementById("qtySelect").value;
     var req = new XMLHttpRequest();
-    var resource = 'http://flip3.engr.oregonstate.edu:6032/insert?name=' + name + "&qty=" + qty;
+    var resource = '/insert?name=' + name + "&qty=" + qty;
     req.open('GET', resource, false);
     req.addEventListener('load', () => {
         if (req.status >= 200 && req.status < 400) {
@@ -74,7 +74,7 @@ function getIDFromButton(button) {
 
 function sendMarkPurchased(id) {
     var req = new XMLHttpRequest();
-    var resource = 'http://flip3.engr.oregonstate.edu:6032/markPurchased?id=' + id; 
+    var resource = 'markPurchased?id=' + id; 
     req.open('GET', resource, false);
     req.addEventListener('load', () => {
         if (req.status >= 200 && req.status < 400) {
@@ -92,7 +92,7 @@ function sendMarkPurchased(id) {
 function getUnpurchased() {
     return_var = [];
     var req = new XMLHttpRequest();
-    req.open('GET', 'http://flip3.engr.oregonstate.edu:6032/getUnpurchased', false);
+    req.open('GET', '/getUnpurchased', false);
     req.addEventListener('load', () => {
         if (req.status >= 200 && req.status < 400) {
             var response_0 = req.responseText;

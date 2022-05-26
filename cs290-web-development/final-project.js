@@ -11,7 +11,11 @@ app.set('view engine', 'handlebars');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(session({secret: "secretPassword"}));
+app.use(session({
+    secret: "secretPassword",
+    resave: true,
+    saveUninitialized: true
+}));
 app.use(express.static(__dirname + '/public'));
 
 app.set('port', 6032);
@@ -33,10 +37,16 @@ const makeProductTableQuery = `CREATE TABLE products(
                         name VARCHAR(255) NOT NULL,
                         price INT);`;
 const updatePurchasedQuery = "UPDATE shoppingList SET purchased=1 WHERE id=?";
+const createDummyTable = `CREATE TABLE dummy(
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        name VARCHAR(255) NOT NULL,
+                        price INT);`;
+const insertDummyEntry = `INSERT INTO dummy (name, price) VALUES ('tester', 40)`;
+const getterDummy = `SELECT * FROM dummy`;
 
 
 // app.get('/insertProduct', (req, res, next) => {
-//   var vals = ['Smart Sticks', 11];
+//   var vals = ['Bladder Control', 12];
 //   mysql.pool.query("INSERT INTO products (`name`, `price`) VALUES (?)", [vals], (err, result) => {
 //     if(err){
 //       next(err);
@@ -45,6 +55,39 @@ const updatePurchasedQuery = "UPDATE shoppingList SET purchased=1 WHERE id=?";
 //     res.render('food.handlebars');
 //   });
 // });
+
+app.get('/creater', (req, res, next) => {
+  mysql.pool.query(createDummyTable, (err) => {
+    if(err){
+      next(err);
+      return;
+    }
+    console.log('table created.. I think');
+    res.send("success");
+  })
+});
+
+app.get('/setter', (req, res, next) => {
+  mysql.pool.query(insertDummyEntry, (err) => {
+    if(err){
+      next(err);
+      return;
+    }
+    console.log('entry created.. I think');
+    res.send("success");
+  })
+});
+
+app.get('/getter', (req, res, next) => {
+  context = {};
+  mysql.pool.query(getterDummy, (err, rows, fields) => {
+    if(err){
+      next(err);
+      return;
+    }
+    res.send(rows);
+  });
+});
 
 app.get('/markPurchased', (req, res, next) => {
   var id = req.query.id;
@@ -100,11 +143,11 @@ app.get('/reset-table', (req, res, next) => {
   });
 });
 
-// app.get('/makeProductTable', (req, res, next) => {
-//   mysql.pool.query(makeProductTableQuery, (err) => {
-//     res.render('food.handlebars');
-//   });
-// });
+app.get('/makeProductTable', (req, res, next) => {
+  mysql.pool.query(makeProductTableQuery, (err) => {
+    res.render('food.handlebars');
+  });
+});
 
 app.get('/', (req, res) => {
   res.render('index.handlebars');
@@ -132,14 +175,14 @@ app.get('/exercise', (req, res) => {
 
 app.post('/exercise', (req, res) => {
   var appID = "c80f52c3a805d68e0ce5bf34b5b33fb8";
-  var urlAndQueryString = "https://api.openweathermap.org/data/2.5/weather?q=98087,us&appid=";
+  var urlAndQueryString = "https://api.openweathermap.org/data/2.5/weather?zip=98087,us&appid=";
   var fullResource = urlAndQueryString + appID;
   //console.log(fullResource);
   var request = new XMLHttpRequest();
   request.open("GET", fullResource, false);
   request.send(null);
   var response = JSON.parse(request.responseText);
-  //console.log(response);
+  console.log(response);
   var tempKelvin = response["main"]["temp"];
   var tempF = math.round((tempKelvin - 273.15) * 9/5 + 32);
   //console.log(tempF);
@@ -180,5 +223,5 @@ app.use(function(err, req, res, next){
 });
 
 app.listen(app.get('port'), function(){
-  console.log(`Express started on http://${process.env.HOSTNAME}:${app.get('port')}; press Ctrl-C to terminate.`);
+  console.log(`Express started on http://127.0.0.1:${app.get('port')}; press Ctrl-C to terminate.`);
 });

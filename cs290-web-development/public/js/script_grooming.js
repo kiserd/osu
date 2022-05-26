@@ -17,7 +17,7 @@ function submitGroomingInfo(event){
     payload.Service = document.getElementById('Service').value;
     payload.Email = document.getElementById('E-mail').value;
     var req = new XMLHttpRequest();
-    req.open('POST', 'http://flip3.engr.oregonstate.edu:6032/grooming', true);
+    req.open('POST', '/grooming', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load', () => {
         if (req.status >= 200 && req.status < 400) {
